@@ -9,6 +9,9 @@
     "scripting"
   ],
   "host_permissions": [
+    "https://api.anthropic.com/*",
+    "https://api.openai.com/*",
+
     "https://twitter.com/*",
     "https://x.com/*",
     "https://www.reddit.com/*",
@@ -44,7 +47,14 @@
       "run_at": "document_idle"
     }
   ],
+  "web_accessible_resources": [
+  {
+    "resources": ["src/patterns.json"],
+    "matches": ["<all_urls>"]
+  }
+  ],
   "background": {
-    "service_worker": "src/background.js"
+    "service_worker": "src/background.js",
+    "type": "module"
   }
 }

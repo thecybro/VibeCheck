@@ -1,0 +1,129 @@
+.vibecheck-blurred > *:not(.vibecheck-overlay) {
+  filter: blur(8px);
+  user-select: none;
+  pointer-events: none;
+  transition: filter 0.3s ease;
+}
+
+.vibecheck-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 18, 0.6);
+  backdrop-filter: blur(4px);
+  border-radius: inherit;
+  animation: vibecheck-fadein 0.25s ease;
+}
+
+@keyframes vibecheck-fadein {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.vibecheck-overlay.vibecheck-revealed {
+  animation: vibecheck-fadeout 0.35s ease forwards;
+}
+
+@keyframes vibecheck-fadeout {
+  to { opacity: 0; transform: scale(1.02); }
+}
+
+.vibecheck-overlay-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 24px;
+  background: linear-gradient(135deg, rgba(18, 18, 32, 0.97), rgba(30, 18, 48, 0.97));
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(139,92,246,0.1) inset;
+  text-align: center;
+  max-width: 280px;
+}
+
+.vibecheck-icon {
+  font-size: 28px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.vibecheck-title {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(139, 92, 246, 0.9);
+}
+
+.vibecheck-reason {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.3;
+}
+
+.vibecheck-emotion-tag {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 20px;
+  padding: 2px 10px;
+  margin: 2px 0;
+}
+
+.vibecheck-bar-wrap {
+  width: 160px;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 4px 0 2px;
+}
+
+.vibecheck-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #7c3aed, #f59e0b);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.vibecheck-score {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+}
+
+.vibecheck-reveal-btn {
+  margin-top: 6px;
+  padding: 7px 18px;
+  background: transparent;
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  border-radius: 20px;
+  color: rgba(139, 92, 246, 0.9);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+}
+
+.vibecheck-reveal-btn:hover {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.8);
+  color: #a78bfa;
+  transform: translateY(-1px);
+}
+
+.vibecheck-reveal-btn:active {
+  transform: translateY(0);
+}

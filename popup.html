@@ -547,7 +547,7 @@
 <div class="panel active" id="panel-filters">
   <div class="section-title">Emotions to Block</div>
   <div class="emotion-grid" id="emotionGrid">
-    <!-- Content's diaplayed based on what's detected in the screen -->
+    <!-- Content's displayed based on what's detected in the screen -->
   </div>
 
   <div class="sensitivity-section">
@@ -575,8 +575,9 @@
   <div class="section-title">AI Analysis (Optional)</div>
   <div class="api-section">
     <div class="input-group">
-      <input type="password" class="api-input" id="apiKeyInput" placeholder="API key here" />
-      <button class="btn btn-primary" id="saveApiBtn">Save</button>
+      <input type="text" class="api-input" id="apiKeyInput" placeholder="API key here" />
+      <button class="btn btn-prim" id="saveApiBtn" style="color:#ef4444; border:1px solid #ef4444; background:transparent;">Save</button>
+      <button class="btn" id="removeApiBtn" style="display:none; color:#ef4444; border:1px solid #ef4444; background:transparent;">Remove</button>
     </div>
     <p class="api-hint">
       Without a key, VibeCheck uses fast local analysis.<br>

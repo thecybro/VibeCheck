@@ -1,0 +1,81 @@
+{
+    "anger": [
+        "hate", "furious", "outraged", "rage", "pathetic", "idiot",
+        "moron", "shut up", "go to hell", "fury", "wrath", "irate",
+        "livid", "pissed off", "enraged", "infuriated", "fuming",
+        "seething", "fed up", "yelling", "screaming", "ranting",
+        "damn you", "bullshit", "wtf", "ffs", "dumbass", "jerk",
+        "clown", "scumbag", "imbecile", "wrathful", "incensed",
+        "indignant", "exasperated", "belligerent", "spiteful",
+        "vindictive", "grudge", "hostility", "tantrum", "meltdown",
+        "blowup", "taunting", "jeering", "belittling", "demeaning",
+        "triggered", "abrasive", "snarky"
+    ],
+
+    "toxicity": [
+        "kys", "kill yourself", "worthless", "scum", "go die",
+        "f**k you", "fuck you", "piece of shit", "abusive", "bully",
+        "bullying", "callous", "cruel", "cruelty", "degrading",
+        "demean", "despicable", "disgraceful", "humiliate",
+        "humiliating", "hypocrite", "manipulative", "menacing",
+        "oppressive", "pervert", "poisonous", "racist", "repulsive",
+        "repugnant", "ruthless", "savage", "scammer", "scheming",
+        "slander", "stalker", "toxic", "traitor", "vicious", "vile",
+        "villain", "vulgar", "wicked", "wretched", "harassing",
+        "harassment", "exploitation", "malicious"
+    ],
+
+    "sadness": [
+        "depressed", "hopeless", "devastated", "heartbroken",
+        "sobbing", "wish i was dead", "want to die", "give up",
+        "depression", "brokenhearted", "melancholy", "grief",
+        "grieving", "lonely", "loneliness", "isolated", "hollow",
+        "helplessness", "despair", "desperate", "crushed",
+        "shattered", "defeated", "remorse", "remorseful",
+        "abandoned", "rejected", "neglected", "withdrawn",
+        "numb", "mourning", "bleak", "woeful", "mournful",
+        "i hate my life", "no reason to live", "feeling empty"
+    ],
+
+    "aggression": [
+        "i will find you", "watch your back", "come at me",
+        "assault", "assaulting", "smashing", "destroy you",
+        "threatened", "intimidation", "domination", "violent",
+        "violence", "retaliate", "retaliation", "vengeance",
+        "brutally", "overpowering", "domineering",
+        "i will hurt you", "you will pay", "come fight me",
+        "i will destroy you", "you're dead", "catch these hands"
+    ],
+
+    "negativity": [
+        "worst ever", "complete disaster", "utter failure",
+        "catastrophic", "ruined everything", "never works",
+        "absolutely terrible", "complete garbage", "total waste",
+        "beyond repair", "deeply flawed", "fundamentally broken",
+        "irredeemably bad", "thoroughly disgusting",
+        "everything is wrong", "nothing ever works",
+        "this is hopeless", "completely useless",
+        "what a disaster", "epic fail"
+    ],
+
+    "fear": [
+        "terrified", "horrifying", "nightmare", "panic attack",
+        "filled with dread", "paralyzed with fear", "traumatized",
+        "paranoid", "paranoia", "phobia", "haunted",
+        "sinister", "ominous", "foreboding", "doomed",
+        "i am scared", "i am terrified", "i can't escape",
+        "i feel trapped", "i'm being stalked", "i fear for my life"
+    ],
+
+    "spam": [
+        "click here now", "free money", "dm for info",
+        "check my bio", "limited time offer", "act now",
+        "buy now", "guaranteed profit", "risk free",
+        "make money fast", "easy cash", "work from home",
+        "passive income", "double your money", "earn fast",
+        "get rich quick", "exclusive deal", "amazing opportunity",
+        "secret method", "hidden trick", "miracle formula",
+        "follow back follow", "follow for follow",
+        "sub4sub", "like4like", "f4f", "l4l"
+    ]
+}

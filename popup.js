@@ -1,5 +1,3 @@
-// VibeCheck Popup Script
-
 const EMOTIONS = [
   { key: 'anger',      emoji: '😡', name: 'Anger',      desc: 'Hostile, furious, or outraged content' },
   { key: 'toxicity',   emoji: '☠️', name: 'Toxicity',   desc: 'Harmful, abusive, or hateful language' },
@@ -12,7 +10,6 @@ const EMOTIONS = [
 
 let settings = null;
 
-// Load settings and render UI
 async function init() {
   settings = await getSettings();
   renderEmotions();
@@ -35,7 +32,6 @@ function saveSettings() {
   chrome.storage.sync.set({ vibecheck_settings: settings });
 }
 
-// Render emotion toggles
 function renderEmotions() {
   const grid = document.getElementById('emotionGrid');
   grid.innerHTML = '';
@@ -65,7 +61,6 @@ function renderEmotions() {
   });
 }
 
-// Master toggle
 function updateMasterToggle() {
   const toggle = document.getElementById('masterToggle');
   const status = document.getElementById('masterStatus');
@@ -81,7 +76,6 @@ document.getElementById('masterToggle').addEventListener('change', (e) => {
   updateMasterToggle();
 });
 
-// Sensitivity buttons
 function updateSensitivity() {
   document.querySelectorAll('.sens-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.level === settings.sensitivity);
@@ -96,7 +90,6 @@ document.querySelectorAll('.sens-btn').forEach(btn => {
   });
 });
 
-// Stats
 function updateStats() {
   document.getElementById('statBlocked').textContent = settings.stats?.blocked || 0;
   document.getElementById('statAnalyzed').textContent = settings.stats?.analyzed || 0;
@@ -109,7 +102,6 @@ document.getElementById('resetStatsBtn').addEventListener('click', () => {
   updateStats();
 });
 
-// Whitelist
 function renderWhitelist() {
   const container = document.getElementById('whitelistTags');
   const whitelist = settings.whitelist || [];
@@ -153,34 +145,60 @@ document.getElementById('whitelistInput').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') document.getElementById('addWhitelistBtn').click();
 });
 
-// API Key
+function maskKey(key) {
+  if (!key || key.length <= 8) return key;
+  return key.slice(0, 4) + '•'.repeat(key.length - 8) + key.slice(-4);
+}
+
 function loadApiKey() {
   const input = document.getElementById('apiKeyInput');
   if (settings.apiKey) {
-    input.value = '••••••••••••••••' + settings.apiKey.slice(-4);
+    input.value = maskKey(settings.apiKey);
+    input.readOnly = true;
     input.dataset.saved = 'true';
+    document.getElementById('saveApiBtn').textContent = 'Edit';
+    document.getElementById('removeApiBtn').style.display = 'inline-block';
   }
 }
 
-document.getElementById('apiKeyInput').addEventListener('focus', (e) => {
-  if (e.target.dataset.saved === 'true') {
-    e.target.value = '';
-    e.target.dataset.saved = 'false';
-  }
-});
-
-document.getElementById('saveApiBtn').addEventListener('click', () => {
+document.getElementById('saveApiBtn').addEventListener('click', (e) => {
   const input = document.getElementById('apiKeyInput');
+  const btn = document.getElementById('saveApiBtn');
+
+  if (btn.textContent === 'Edit') {
+    input.value = '';
+    input.readOnly = false;
+    input.focus();
+    btn.textContent = 'Save';
+    return;
+  }
+
   const key = input.value.trim();
+  console.log('Saving key:', JSON.stringify(key));
   if (!key || key.includes('•')) return;
+
   settings.apiKey = key;
   saveSettings();
-  input.value = '••••••••••••••••' + key.slice(-4);
+  input.value = maskKey(key);
+  input.readOnly = true;
   input.dataset.saved = 'true';
-  showStatus('API key saved! Using Claude for deep analysis.');
+  btn.textContent = 'Edit';
+  document.getElementById('removeApiBtn').style.display = 'inline-block';
+  showStatus('API key saved!');
 });
 
-// Tabs
+document.getElementById('removeApiBtn').addEventListener('click', () => {
+  const input = document.getElementById('apiKeyInput');
+  settings.apiKey = '';
+  saveSettings();
+  input.value = '';
+  input.readOnly = false;
+  input.dataset.saved = 'false';
+  document.getElementById('saveApiBtn').textContent = 'Save';
+  document.getElementById('removeApiBtn').style.display = 'none';
+  showStatus('API key removed.');
+});
+
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -190,7 +208,6 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
-// Status message
 function showStatus(msg) {
   const el = document.getElementById('statusMsg');
   el.textContent = msg;
@@ -198,7 +215,6 @@ function showStatus(msg) {
   setTimeout(() => { el.style.opacity = '0'; }, 3000);
 }
 
-// Listen for live stat updates
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.vibecheck_settings) {
     const newSettings = changes.vibecheck_settings.newValue;

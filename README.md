@@ -1,9 +1,16 @@
-# 🛡️ VibeCheck — Sentiment Shield Browser Extension
+# 🛡️ [VibeCheck]() — Sentiment Shield Browser Extension
 
-A customizable sentiment filter for your social media feed. **VibeCheck** automatically analyzes post content using NLP and hides negative, toxic, or aggressive posts behind a blur overlay.
+A customizable sentiment filter for your social media feed.
+
+**VibeCheck** automatically analyzes post content using NLP and hides negative, toxic, or aggressive posts behind a blur overlay.
+
+> **Notes:**  
+> 1. Feature to add supported platforms isn't added yet, enjoy 4 supported platforms for now.
+> 2. For now, it supports Claude only, OpenAI API Key is just a placeholder for now, it will be added on demand.
+> 3. Since it uses local analysis (if API Key not added), it might show overlay for normal content as well, will be improved on demand.
 
 ---
-<!-- 
+
 ## Features
 
 - **Real-time DOM scanning** — detects new posts as you scroll
@@ -17,20 +24,17 @@ A customizable sentiment filter for your social media feed. **VibeCheck** automa
 
 ---
 
-## Installation (Chrome / Edge / Brave / Opera)
+## Installation
 
-1. Download and **unzip** the `vibecheck` folder
-2. Open your browser and go to: `chrome://extensions`
-3. Enable **Developer Mode** (toggle in top-right corner)
-4. Click **"Load unpacked"**
-5. Select the `vibecheck` folder
-6. The VibeCheck shield icon will appear in your toolbar ✅
+### Direct download:
+**If not available in store:**
+- **Click [VibeCheck]()**
 
 ---
 
 ## Configuration
 
-Click the VibeCheck icon in your toolbar to open the dashboard:
+Click the **VibeCheck** icon in your toolbar to open the dashboard:
 
 ### Filters Tab
 - Toggle which emotions to block (Anger, Toxicity, etc.)
@@ -40,7 +44,10 @@ Click the VibeCheck icon in your toolbar to open the dashboard:
 - Add usernames or display names — their posts always appear unfiltered
 
 ### Settings Tab
-- **AI API Key (optional):** Paste API Key of the AI you use for AI-powered analysis. Without a key, VibeCheck uses fast local pattern matching.
+- **AI API Key (optional):** Paste API Key of the AI you use for AI-powered analysis. Without a key, **VibeCheck** uses fast local pattern matching.
+
+> ***Note:*** **VibeCheck** doesn't send your API Key anywhere and it runs locally.
+
 
 ---
 
@@ -49,7 +56,7 @@ Click the VibeCheck icon in your toolbar to open the dashboard:
 1. **Content Script** monitors the DOM using a `MutationObserver`
 2. New posts are detected, text is extracted using platform-specific selectors
 3. Text is sent to the **Background Service Worker** for analysis
-4. With an API key → Claude Haiku analyzes sentiment and returns emotion scores
+4. With an API key → `Claude Haiku` (my favourite) or your favourite AI analyzes sentiment and returns emotion scores (only supports claude for now)
 5. Without an API key → Local keyword heuristics provide instant analysis
 6. If a blocked emotion exceeds the sensitivity threshold → blur overlay is applied
 7. User can click **"Reveal Anyway"** to dismiss the overlay
@@ -59,7 +66,7 @@ Click the VibeCheck icon in your toolbar to open the dashboard:
 ## File Structure
 
 ```
-vibecheck/
+VibeCheck/
 ├── manifest.json          # Extension config (Manifest V3)
 ├── popup.html             # Settings dashboard UI
 ├── popup.js               # Dashboard logic
@@ -68,9 +75,15 @@ vibecheck/
 │   ├── icon32.png
 │   ├── icon48.png
 │   └── icon128.png
+├── previews/                # Extension previews
+│   ├── filters.png
+│   ├── overlay.png
+│   ├── settings.png
+│   └── whitelist.png
 └── src/
     ├── background.js      # Service worker (analysis engine)
     ├── content.js         # DOM scanner & overlay injector
+    ├── patterns.json      # Library of trigger words
     └── overlay.css        # Blur overlay styles
 ```
 
@@ -79,12 +92,11 @@ vibecheck/
 ## 🔒 Privacy
 
 - No data is ever stored or transmitted without your consent
-- Text is only sent to Anthropic's API if you provide your own API key
+- Text is only sent to API provider if you provide your own API key
 - The extension only activates on supported social media domains
 - All analysis results are cached locally for performance
 
 ---
-<!-- 
-## Extending VibeCheck
+## Extending VibeCheck (until the ui option is added)
 
-To add a new platform, add a selector config to `PLATFORM_CONFIG` in `src/content.js` and add the domain to `host_permissions` and `content_scripts.matches` in `manifest.json`. --> -->
+To add a new platform, add a selector config to `PLATFORM_CONFIG` in `src/content.js` and add the domain to `host_permissions` and `content_scripts.matches` in `manifest.json`. 
