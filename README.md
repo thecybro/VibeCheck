@@ -5,9 +5,9 @@ A customizable sentiment filter for your social media feed.
 **VibeCheck** automatically analyzes post content using NLP and hides negative, toxic, or aggressive posts behind a blur overlay.
 
 > **Notes:**  
-> 1. Feature to add supported platforms isn't added yet, enjoy 4 supported platforms for now.
-> 2. For now, it supports Claude only, OpenAI API Key is just a placeholder for now, it will be added on demand.
-> 3. Since it uses local analysis (if API Key not added), it might show overlay for normal content as well, will be improved on demand.
+> **1. Since it uses local analysis (if API Key not added), it might show overlay for normal content as well, will be improved on demand.**
+> 2. Feature to add supported platforms isn't added yet, enjoy 4 supported platforms for now.
+> 3. For now, it supports Claude only, OpenAI API Key is just a placeholder for now, it will be added on demand.
 
 ---
 

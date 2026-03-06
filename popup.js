@@ -23,10 +23,10 @@ async function init() {
 function getSettings() {
   return new Promise(resolve => {
     chrome.storage.sync.get('vibecheck_settings', result => {
-      // A guard against first-install race where storage isn't written yet
+      // Guard against first-install race where storage isn't written yet
       const saved = result.vibecheck_settings;
       if (saved) return resolve(saved);
-      // To not let popup get undefined
+      // Write defaults now and resolve with them so popup never gets undefined
       chrome.storage.sync.set({ vibecheck_settings: DEFAULT_SETTINGS });
       resolve(DEFAULT_SETTINGS);
     });
@@ -46,12 +46,14 @@ const DEFAULT_SETTINGS = {
     spam: false
   },
   whitelist: [],
-  stats: { blocked: 0, analyzed: 0, revealed: 0 },
+  stats: { blocked: 0, analyzed: 0, revealed: 0 }, // local only, merged in by GET_SETTINGS
   sensitivity: 'medium'
 };
 
 function saveSettings() {
-  chrome.storage.sync.set({ vibecheck_settings: settings });
+  // Never write stats into sync storage — strip them before saving
+  const { stats: _dropped, ...pureSettings } = settings;
+  chrome.storage.sync.set({ vibecheck_settings: pureSettings });
 }
 
 function renderEmotions() {
@@ -119,8 +121,9 @@ function updateStats() {
 }
 
 document.getElementById('resetStatsBtn').addEventListener('click', () => {
-  settings.stats = { blocked: 0, analyzed: 0, revealed: 0 };
-  saveSettings();
+  const zero = { blocked: 0, analyzed: 0, revealed: 0 };
+  chrome.storage.local.set({ vibecheck_stats: zero });
+  settings.stats = zero;
   updateStats();
 });
 
@@ -237,13 +240,14 @@ function showStatus(msg) {
   setTimeout(() => { el.style.opacity = '0'; }, 3000);
 }
 
-chrome.storage.onChanged.addListener((changes) => {
-  if (changes.vibecheck_settings) {
-    const newSettings = changes.vibecheck_settings.newValue;
-    if (newSettings?.stats) {
-      document.getElementById('statBlocked').textContent = newSettings.stats.blocked || 0;
-      document.getElementById('statAnalyzed').textContent = newSettings.stats.analyzed || 0;
-      document.getElementById('statRevealed').textContent = newSettings.stats.revealed || 0;
+// Settings changes (enabled toggle, emotion filters) come through sync
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && changes.vibecheck_stats) {
+    const stats = changes.vibecheck_stats.newValue;
+    if (stats) {
+      document.getElementById('statBlocked').textContent = stats.blocked || 0;
+      document.getElementById('statAnalyzed').textContent = stats.analyzed || 0;
+      document.getElementById('statRevealed').textContent = stats.revealed || 0;
     }
   }
 });

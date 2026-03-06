@@ -3,6 +3,42 @@
 
   if (window.__vibeCheckLoaded) return;
   window.__vibeCheckLoaded = true;
+  let _contextAlive = true;
+
+  function isContextAlive() {
+    try {
+      return _contextAlive && !!chrome.runtime?.id;
+    } catch {
+      _contextAlive = false;
+      return false;
+    }
+  }
+
+  function safeSend(message, callback) {
+    if (!isContextAlive()) return;
+    try {
+      if (callback) {
+        chrome.runtime.sendMessage(message, (response) => {
+          if (chrome.runtime.lastError) return; // swallow SW-not-running errors
+          callback(response);
+        });
+      } else {
+        chrome.runtime.sendMessage(message);
+      }
+    } catch {
+      _contextAlive = false;
+      teardown();
+    }
+  }
+
+  function teardown() {
+    try { observer.disconnect(); } catch { /* already gone */ }
+    document.querySelectorAll('.vibecheck-overlay').forEach(el => el.remove());
+    document.querySelectorAll('.vibecheck-blurred').forEach(el => {
+      el.classList.remove('vibecheck-blurred');
+    });
+  }
+  // ──────────────────────────────────────────────────────────────────────────
 
   const PLATFORM_CONFIG = {
     'twitter.com': {
@@ -50,10 +86,12 @@
 
   async function loadSettings() {
     return new Promise((resolve) => {
-      chrome.runtime.sendMessage({ type: 'GET_SETTINGS' }, (response) => {
+      safeSend({ type: 'GET_SETTINGS' }, (response) => {
         settings = response;
         resolve(response);
       });
+      // If context is already dead, resolve with null so .then() doesn't hang
+      if (!isContextAlive()) resolve(null);
     });
   }
 
@@ -94,8 +132,10 @@
     overlay.querySelector('.vibecheck-reveal-btn').addEventListener('click', (e) => {
       e.stopPropagation();
       overlay.classList.add('vibecheck-revealed');
+      const post = overlay.parentElement;
+      if (post) post.classList.remove('vibecheck-blurred');
       setTimeout(() => overlay.remove(), 400);
-      chrome.runtime.sendMessage({ type: 'UPDATE_STATS', statType: 'revealed' });
+      safeSend({ type: 'UPDATE_STATS', statType: 'revealed' });
     });
 
     return overlay;
@@ -112,10 +152,11 @@
 
     postEl.classList.add('vibecheck-blurred');
 
-    chrome.runtime.sendMessage({ type: 'UPDATE_STATS', statType: 'blocked' });
+    safeSend({ type: 'UPDATE_STATS', statType: 'blocked' });
   }
 
   async function analyzePost(postEl) {
+    if (!isContextAlive()) return;
     if (!settings?.enabled) return;
     if (getProcessed().has(postEl)) return;
     getProcessed().add(postEl);
@@ -125,47 +166,40 @@
 
     const author = extractAuthor(postEl);
 
-    // To not analyze the same text again
     const key = text.substring(0, 80);
     if (pendingAnalysis.has(key)) return;
     pendingAnalysis.set(key, true);
 
-    chrome.runtime.sendMessage({ type: 'UPDATE_STATS', statType: 'analyzed' });
+    safeSend({ type: 'UPDATE_STATS', statType: 'analyzed' });
 
-    chrome.runtime.sendMessage(
-      { type: 'ANALYZE_TEXT', text, author },
-      (response) => {
-        pendingAnalysis.delete(key);
-        if (chrome.runtime.lastError) return;
-        if (response?.blocked) {
-          applyOverlay(postEl, response);
-        }
+    safeSend({ type: 'ANALYZE_TEXT', text, author }, (response) => {
+      pendingAnalysis.delete(key);
+      if (response?.blocked) {
+        applyOverlay(postEl, response);
       }
-    );
+    });
+
+    setTimeout(() => pendingAnalysis.delete(key), 8000);
   }
 
   function scanPosts() {
-    if (!settings?.enabled) return;
+    if (!isContextAlive() || !settings?.enabled) return;
     const posts = document.querySelectorAll(config.postSelector);
     posts.forEach(post => analyzePost(post));
   }
 
   const observer = new MutationObserver((mutations) => {
-    if (!settings?.enabled) return;
+    if (!isContextAlive() || !settings?.enabled) return;
     let shouldScan = false;
     for (const mutation of mutations) {
-      if (mutation.addedNodes.length > 0) {
-        shouldScan = true;
-        break;
-      }
+      if (mutation.addedNodes.length > 0) { shouldScan = true; break; }
     }
-    if (shouldScan) {
-      requestAnimationFrame(scanPosts);
-    }
+    if (shouldScan) requestAnimationFrame(scanPosts);
   });
 
-  chrome.storage.onChanged.addListener((changes) => {
-    if (changes.vibecheck_settings) {
+  try {
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (!isContextAlive() || area !== 'sync' || !changes.vibecheck_settings) return;
       settings = changes.vibecheck_settings.newValue;
 
       if (!settings.enabled) {
@@ -174,21 +208,19 @@
           el.classList.remove('vibecheck-blurred');
         });
       } else {
-        
         Object.assign(window, { __vibeCheckProcessed: new WeakSet() });
         scanPosts();
       }
-    }
-  });
+    });
+  } catch {
+  }
 
-  loadSettings().then(() => {
+  loadSettings().then((s) => {
+    if (!s || !isContextAlive()) return;
     scanPosts();
 
     const feedEl = document.querySelector(config.feedSelector) || document.body;
-    observer.observe(feedEl, {
-      childList: true,
-      subtree: true
-    });
+    observer.observe(feedEl, { childList: true, subtree: true });
   });
 
 })();

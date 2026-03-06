@@ -1,5 +1,4 @@
 let patterns = null;
-// Loading our words library
 async function loadPatterns() {
   const response = await fetch(chrome.runtime.getURL('src/patterns.json'));
   patterns = await response.json();
@@ -7,6 +6,7 @@ async function loadPatterns() {
 
 loadPatterns();
 
+// User PREFERENCES only — synced across devices, small, rarely written
 const DEFAULT_SETTINGS = {
   enabled: true,
   apiKey: '',
@@ -20,18 +20,20 @@ const DEFAULT_SETTINGS = {
     spam: false
   },
   whitelist: [],
-  stats: {
-    blocked: 0,
-    analyzed: 0,
-    revealed: 0
-  },
   sensitivity: 'medium'
 };
+
+const DEFAULT_STATS = { blocked: 0, analyzed: 0, revealed: 0 };
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.get('vibecheck_settings', (result) => {
     if (!result.vibecheck_settings) {
       chrome.storage.sync.set({ vibecheck_settings: DEFAULT_SETTINGS });
+    }
+  });
+  chrome.storage.local.get('vibecheck_stats', (result) => {
+    if (!result.vibecheck_stats) {
+      chrome.storage.local.set({ vibecheck_stats: DEFAULT_STATS });
     }
   });
 });
@@ -42,18 +44,37 @@ const CACHE_MAX_SIZE = 500;
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'ANALYZE_TEXT') {
     handleAnalysis(message.text, message.author, sendResponse);
-    return true; 
+    return true;
   }
 
   if (message.type === 'GET_SETTINGS') {
-    chrome.storage.sync.get('vibecheck_settings', (result) => {
-      sendResponse(result.vibecheck_settings || DEFAULT_SETTINGS);
+    // Return settings + stats merged, so popup gets everything in one call
+    chrome.storage.sync.get('vibecheck_settings', (syncResult) => {
+      chrome.storage.local.get('vibecheck_stats', (localResult) => {
+        const settings = syncResult.vibecheck_settings || DEFAULT_SETTINGS;
+        const stats = localResult.vibecheck_stats || DEFAULT_STATS;
+        sendResponse({ ...settings, stats });
+      });
     });
     return true;
   }
 
   if (message.type === 'UPDATE_STATS') {
     updateStats(message.statType);
+    sendResponse({ success: true });
+    return true;
+  }
+
+  if (message.type === 'RESET_STATS') {
+    chrome.storage.local.set({ vibecheck_stats: DEFAULT_STATS });
+    sendResponse({ success: true });
+    return true;
+  }
+
+  if (message.type === 'SAVE_SETTINGS') {
+    // Popup sends the pure settings object (no stats inside)
+    const { stats: _dropped, ...pureSettings } = message.settings;
+    chrome.storage.sync.set({ vibecheck_settings: pureSettings });
     sendResponse({ success: true });
     return true;
   }
@@ -167,12 +188,14 @@ function localAnalysis(text) {
   const lower = text.toLowerCase();
   const emotions = {};
   for (const [emotion, words] of Object.entries(patterns)) {
+    // Score from 1 match: 1 hit = 40, 2 = 65, 3+ = 100. Real posts rarely spam keywords.
     const matches = words.filter(w => lower.includes(w)).length;
     emotions[emotion] = matches === 0 ? 0 : Math.min(100, 25 + matches * 25);
   }
 
   const maxScore = Math.max(...Object.values(emotions));
   const dominant = Object.entries(emotions).find(([, v]) => v === maxScore)?.[0] || 'neutral';
+  // Correct direction: high score = negative, low score = neutral/positive
   const overall = maxScore >= 65 ? 'negative' : maxScore >= 40 ? 'neutral' : 'positive';
 
   return { emotions, overall, dominant, confidence: 70 };
@@ -214,11 +237,11 @@ function getSettings() {
 }
 
 function updateStats(statType) {
-  chrome.storage.sync.get('vibecheck_settings', (result) => {
-    const settings = result.vibecheck_settings || DEFAULT_SETTINGS;
-    if (settings.stats[statType] !== undefined) {
-      settings.stats[statType]++;
-      chrome.storage.sync.set({ vibecheck_settings: settings });
+  chrome.storage.local.get('vibecheck_stats', (result) => {
+    const stats = result.vibecheck_stats || DEFAULT_STATS;
+    if (stats[statType] !== undefined) {
+      stats[statType]++;
+      chrome.storage.local.set({ vibecheck_stats: stats });
     }
   });
 }
