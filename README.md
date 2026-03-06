@@ -1,4 +1,4 @@
-# 🛡️ [VibeCheck]() — Sentiment Shield Browser Extension
+# 🛡️ VibeCheck — Sentiment Shield Browser Extension
 
 A customizable sentiment filter for your social media feed.
 
@@ -28,7 +28,7 @@ A customizable sentiment filter for your social media feed.
 
 ### Direct download:
 **If not available in store:**
-- **Click [VibeCheck]()**
+- **Click [VibeCheck](https://github.com/thecybro/VibeCheck/releases/download/v1.0.0/VibeCheck.crx)**
 
 ---
 
