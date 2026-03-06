@@ -23,10 +23,32 @@ async function init() {
 function getSettings() {
   return new Promise(resolve => {
     chrome.storage.sync.get('vibecheck_settings', result => {
-      resolve(result.vibecheck_settings);
+      // A guard against first-install race where storage isn't written yet
+      const saved = result.vibecheck_settings;
+      if (saved) return resolve(saved);
+      // To not let popup get undefined
+      chrome.storage.sync.set({ vibecheck_settings: DEFAULT_SETTINGS });
+      resolve(DEFAULT_SETTINGS);
     });
   });
 }
+
+const DEFAULT_SETTINGS = {
+  enabled: true,
+  apiKey: '',
+  blockedEmotions: {
+    anger: true,
+    toxicity: true,
+    sadness: false,
+    fear: false,
+    negativity: true,
+    aggression: true,
+    spam: false
+  },
+  whitelist: [],
+  stats: { blocked: 0, analyzed: 0, revealed: 0 },
+  sensitivity: 'medium'
+};
 
 function saveSettings() {
   chrome.storage.sync.set({ vibecheck_settings: settings });

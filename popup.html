@@ -362,6 +362,17 @@
       transform: translateY(-1px);
     }
 
+    .btn-secondary {
+      background: transparent;
+      color: var(--red);
+      border: 1px solid var(--red) !important;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(239, 68, 68, 0.1);
+      transform: translateY(-1px);
+    }
+
     .api-hint {
       font-size: 10px;
       color: var(--text2);
@@ -576,8 +587,8 @@
   <div class="api-section">
     <div class="input-group">
       <input type="text" class="api-input" id="apiKeyInput" placeholder="API key here" />
-      <button class="btn btn-prim" id="saveApiBtn" style="color:#ef4444; border:1px solid #ef4444; background:transparent;">Save</button>
-      <button class="btn" id="removeApiBtn" style="display:none; color:#ef4444; border:1px solid #ef4444; background:transparent;">Remove</button>
+      <button class="btn btn-primary" id="saveApiBtn">Save</button>
+      <button class="btn btn-secondary" id="removeApiBtn" style="display:none;">Remove</button>
     </div>
     <p class="api-hint">
       Without a key, VibeCheck uses fast local analysis.<br>

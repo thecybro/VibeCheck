@@ -1,5 +1,5 @@
 let patterns = null;
-// LOading our words library
+// Loading our words library
 async function loadPatterns() {
   const response = await fetch(chrome.runtime.getURL('src/patterns.json'));
   patterns = await response.json();
@@ -25,7 +25,7 @@ const DEFAULT_SETTINGS = {
     analyzed: 0,
     revealed: 0
   },
-  sensitivity: 'medium' // Defaults to medium
+  sensitivity: 'medium'
 };
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -168,12 +168,12 @@ function localAnalysis(text) {
   const emotions = {};
   for (const [emotion, words] of Object.entries(patterns)) {
     const matches = words.filter(w => lower.includes(w)).length;
-    emotions[emotion] = matches <= 1 ? 0: Math.min(100, matches * 25);
+    emotions[emotion] = matches === 0 ? 0 : Math.min(100, 25 + matches * 25);
   }
 
   const maxScore = Math.max(...Object.values(emotions));
   const dominant = Object.entries(emotions).find(([, v]) => v === maxScore)?.[0] || 'neutral';
-  const overall = maxScore > 60 ? 'negative' : maxScore > 30 ? 'neutral' : 'positive';
+  const overall = maxScore >= 65 ? 'negative' : maxScore >= 40 ? 'neutral' : 'positive';
 
   return { emotions, overall, dominant, confidence: 70 };
 }

@@ -43,8 +43,10 @@
 
   const config = PLATFORM_CONFIG[platform];
   let settings = null;
-  const processedPosts = new WeakSet();
+  window.__vibeCheckProcessed = new WeakSet();
   const pendingAnalysis = new Map();
+
+  function getProcessed() { return window.__vibeCheckProcessed; }
 
   async function loadSettings() {
     return new Promise((resolve) => {
@@ -115,8 +117,8 @@
 
   async function analyzePost(postEl) {
     if (!settings?.enabled) return;
-    if (processedPosts.has(postEl)) return;
-    processedPosts.add(postEl);
+    if (getProcessed().has(postEl)) return;
+    getProcessed().add(postEl);
 
     const text = extractText(postEl);
     if (!text || text.trim().length < 10) return;
@@ -172,7 +174,8 @@
           el.classList.remove('vibecheck-blurred');
         });
       } else {
-        processedPosts.forEach = undefined; 
+        
+        Object.assign(window, { __vibeCheckProcessed: new WeakSet() });
         scanPosts();
       }
     }
