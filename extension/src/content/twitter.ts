@@ -1,5 +1,8 @@
 // Track which posts we've already sent for classification
 // Without this, MutationObserver would send the same post multiple times
+
+import './overlay.css'
+
 const processedPosts = new Set<string>()
 
 let postCounter = 0
@@ -34,7 +37,7 @@ function processPost(element: Element): void {
     const text = extractText(element)
     
     // Skip if no text or too short to classify
-    if (!text || text.length < 10) return
+    if (!text || text.length < 30) return
 
     console.log(`[VibeCheck] Sending for classification: "${text.slice(0, 50)}"`)
 
@@ -44,15 +47,88 @@ function processPost(element: Element): void {
         postId,
         text
     })
+
+    chrome.storage.local.get('vibecheck_stats', (result) => {
+        const Stats = (result.vibecheck_stats ?? {blocked: 0, analyzed: 0, revealed: 0}) as {blocked: number, analyzed: number, revealed: number}
+
+        const stats = {... Stats, analyzed: Stats.analyzed + 1}
+
+        chrome.storage.local.set({vibecheck_stats: stats})
+
+        console.log(`Total analyzed count: ${stats.analyzed}`)
+    })
 }
 
 // Listen for results coming back from background worker
 chrome.runtime.onMessage.addListener((message) => {
     if (message.type === "CLASSIFICATION_RESULT" && message.shouldBlock) {
-        console.log(`[VibeCheck] Should block post (${message.postId}): ${message.text.slice(0,50)} \n Reason, ${message.reason}`)
-        // We'll add the blur overlay here in the next step
+
+    chrome.storage.local.get("vibecheck_stats", (result) => {
+        const Stats = (result.vibecheck_stats ?? {blocked: 0, analyzed: 0, revealed: 0}) as {analyzed: number, blocked: number, revealed: number}
+
+        const stats = {...Stats, blocked: Stats.blocked + 1}
+
+        chrome.storage.local.set({vibecheck_stats: stats})
+
+        console.log(`Total blocked count: ${stats.blocked}`)
+    })
+        console.log(`!!!![VibeCheck] Blocking post (${message.postId}): ${message.text.slice(0,50)} \n Emotion: "${message.emotion}" !!!!`)
+        applyOverLay(message.postId, message.emotion, message.confidence)
     }
 })
+
+function applyOverLay(postId: string, emotion: string, confidence: string): void {
+    // Finding the tweet using its defined postId attribute
+    const element = document.querySelector(`[data-vc-id="${postId}"]`) as HTMLElement
+
+    if (!element) return
+
+    element.classList.add('vibecheck-blurred')
+    element.style.position = 'relative'
+
+    // Create overlay
+    const overlay = document.createElement("div")
+    overlay.className = "vibecheck-overlay"
+
+    overlay.innerHTML = `
+        <div class="vibecheck-overlay">
+        <div class="vibecheck-overlay-inner">
+        <div class="vibecheck-icon">🛡️</div>
+        <div class="vibecheck-title">VibeCheck</div>
+        <div class="vibecheck-reason">Potentially Negative Content Detected</div>
+        <div class="vibecheck-emotion-tag">${emotion}</div>
+        <div class="vibecheck-bar-wrap">
+          <div class="vibecheck-bar" style="width:${confidence}%"></div>
+        </div>
+        <div class="vibecheck-score">${confidence}% ${emotion}</div>
+        <button class="vibecheck-reveal-btn">Reveal Anyway</button>
+      </div>
+      </div>
+    `;
+
+    // For the show anyway action
+    overlay.querySelector(".vibecheck-reveal-btn")?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        overlay.classList.add('vibecheck-revealed');
+        const post = overlay.parentElement;
+        if (post) post.classList.remove('vibecheck-blurred');
+        setTimeout(() => overlay.remove(), 400);
+
+        chrome.storage.local.get("vibecheck_stats", (result) => {
+
+            const Stats = (result.vibecheck_stats ?? {blocked: 0, analyzed: 0, revaled: 0}) as {analyzed: number, blocked: number, revealed: number}
+
+            const stats = {...Stats, revealed: Stats.revealed + 1}
+
+            chrome.storage.local.set({vibecheck_stats: stats})
+            console.log(`Total revealed count: ${stats.revealed}`)
+        })
+
+    })
+    
+    element.appendChild(overlay)
+
+}
 
 // Process tweets already on the page
 document.querySelectorAll('[data-testid="tweet"]').forEach(processPost)

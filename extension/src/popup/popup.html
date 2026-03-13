@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VibeCheck</title>
+
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+<div class="header">
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">🛡️</div>
+      <div>
+        <div class="logo-text">VibeCheck</div>
+        <div class="logo-sub">Sentiment Shield</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="master-toggle">
+    <div class="toggle-label">
+      <strong id="masterStatus">Protection Active</strong>
+      <span id="masterDesc">Scanning your feed in real-time</span>
+    </div>
+    <label class="toggle">
+      <input type="checkbox" id="masterToggle" />
+      <span class="toggle-track"></span>
+    </label>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-num" id="statBlocked">0</div>
+    <div class="stat-label">Blocked</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" id="statAnalyzed">0</div>
+    <div class="stat-label">Analyzed</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num" id="statRevealed">0</div>
+    <div class="stat-label">Revealed</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="filters">🎚 Filters</button>
+  <button class="tab" data-tab="whitelist">✅ Whitelist</button>
+  <button class="tab" data-tab="settings">⚙️ Settings</button>
+</div>
+
+<div class="panel active" id="panel-filters">
+  <div class="section-title">Emotions to Block</div>
+  <div class="emotion-grid" id="emotionGrid">
+    <!-- Content's displayed based on what's detected in the screen -->
+  </div>
+
+  <div class="sensitivity-section">
+    <div class="section-title">Sensitivity Level</div>
+    <div class="sensitivity-row">
+      <button class="sens-btn" data-level="low">🐱 Low</button>
+      <button class="sens-btn" data-level="medium">😾 Medium</button>
+      <button class="sens-btn" data-level="high">😼 High</button>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-whitelist">
+  <div class="section-title">Whitelisted Users</div>
+  <div class="whitelist-input-row">
+    <input type="text" class="whitelist-input" id="whitelistInput" placeholder="@username or display name" />
+    <button class="btn btn-primary" id="addWhitelistBtn">Add</button>
+  </div>
+  <div class="whitelist-tags" id="whitelistTags">
+    <div class="empty-state">No users whitelisted yet.<br>Posts from whitelisted users always show.</div>
+  </div>
+</div>
+
+<div class="panel" id="panel-settings">
+  <div class="section-title">AI Analysis (Optional)</div>
+  <div class="api-section">
+    <div class="input-group">
+      <input type="text" class="api-input" id="apiKeyInput" placeholder="API key here" />
+      <button class="btn btn-primary" id="saveApiBtn">Save</button>
+      <button class="btn btn-secondary" id="removeApiBtn" style="display:none;">Remove</button>
+    </div>
+    <p class="api-hint">
+      Without a key, VibeCheck uses fast local analysis.<br>
+      Add <a href="https://console.anthropic.com" target="_blank">Claude API key</a>  or <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI API Key</a>  for deeper sentiment detection.
+    <br><br>
+      I personally like <a href="https://console.anthropic.com" target="_blank">
+      Claude</a> btw.
+
+    </p>
+  </div>
+
+  <div class="section-title" style="margin-top:14px">Supported Platforms</div>
+  <div class="platform-list">
+    <div class="platform-badge"><span class="dot"></span>Twitter/X</div>
+    <div class="platform-badge"><span class="dot"></span>Reddit</div>
+    <div class="platform-badge"><span class="dot"></span>LinkedIn</div>
+    <div class="platform-badge"><span class="dot"></span>Facebook</div>
+  </div>
+
+  <div class="status-msg" id="statusMsg"></div>
+</div>
+
+<div class="footer">
+  <span class="footer-text">VibeCheck v1.0</span>
+  <button class="reset-btn" id="resetStatsBtn">Reset Stats</button>
+</div>
+
+<script type="module" src="popup.ts"></script>
+</body>
+</html>

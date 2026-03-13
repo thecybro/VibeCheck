@@ -42,35 +42,29 @@ def classify(content: dict):
     if not text:
         return {"error": "Text not found!"}
 
+    if len(text.strip()) < 30:
+        return {"error": "Text is too short!"}
+
     result = classifier(text)
     final = result[0][0]
-    final1 = result[0][1]
 
     raw_label = final["label"].lower()
-    raw_label1 = final1["label"].lower()
 
     raw_score = final["score"]
-    raw_score1 = final1["score"]
 
     confidence = (round(final["score"] * 100, 4))
-    confidence1 = (round(final1["score"] * 100, 4))
 
     emotion = EMOTION_MAP.get(raw_label, None)
-    emotion1 = EMOTION_MAP.get(raw_label1, None)
 
     if raw_score < 0.7:
         emotion = None
-        
-    if raw_score1 < 0.7:
-        emotion1 = None
 
     return {
-    "emotions": [
-        {"emotion": emotion, "raw_label": raw_label, "confidence": confidence, "raw_score": raw_score, "blocked": emotion is not None},
-        {"emotion1": emotion1, "raw_label1": raw_label1, "confidence1": confidence1, "raw_score1": raw_score1, "blocked": emotion1 is not None}
-    ],
-    "blocked": emotion is not None or emotion1 is not None,
-    "reason": emotion or emotion1
+        "emotion": emotion,
+        "raw_label": raw_label,
+        "confidence": confidence,
+        "raw_score": raw_score,
+        "blocked": emotion is not None
     }
 
     

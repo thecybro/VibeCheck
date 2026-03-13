@@ -1,8 +1,4 @@
 
-> ## 📢 Project is under development!
-> ### Reason: Detection system has been detected to be very weak
-
-<!--
 # 🛡️ VibeCheck — Sentiment Shield Browser Extension
 
 A customizable sentiment filter for your social media feed.
@@ -32,9 +28,9 @@ A customizable sentiment filter for your social media feed.
 
 ## Installation
 
-### Direct download:
+<!-- ### Direct download:
 **If not available in store:**
-- **Click [VibeCheck](https://github.com/thecybro/VibeCheck/releases/download/v1.0.0/VibeCheck.crx)**
+- **Click [VibeCheck](https://github.com/thecybro/VibeCheck/releases/download/v1.0.0/VibeCheck.crx)** -->
 
 ---
 
@@ -71,7 +67,7 @@ Click the **VibeCheck** icon in your toolbar to open the dashboard:
 
 ## File Structure
 
-```
+<!-- ```
 VibeCheck/
 ├── manifest.json          # Extension config (Manifest V3)
 ├── popup.html             # Settings dashboard UI
@@ -91,6 +87,33 @@ VibeCheck/
     ├── content.js         # DOM scanner & overlay injector
     ├── patterns.json      # Library of trigger words
     └── overlay.css        # Blur overlay styles
+``` -->
+
+```
+└── VibeCheck
+    └── backend
+        ├── main.py
+    └── extension
+        └── src
+            └── background
+                ├── background.ts
+            └── content
+                ├── twitter.ts
+            └── popup
+                ├── popup.html
+                ├── popup.css
+                └── popup.js
+        ├── eslint.config.js
+        ├── manifest.json
+        ├── package-lock.json
+        ├── package.json
+        ├── README.md
+        ├── tsconfig.app.json
+        ├── tsconfig.json
+        ├── tsconfig.node.json
+        └── vite.config.ts
+    ├── .gitignore
+    └── README.md
 ```
 
 ---
@@ -105,4 +128,4 @@ VibeCheck/
 ---
 ## Extending VibeCheck (until the ui option is added)
 
-To add a new platform, add a selector config to `PLATFORM_CONFIG` in `src/content.js` and add the domain to `host_permissions` and `content_scripts.matches` in `manifest.json`.  -->
+To add a new platform, add a selector config to `PLATFORM_CONFIG` in `src/content.js` and add the domain to `host_permissions` and `content_scripts.matches` in `manifest.json`.

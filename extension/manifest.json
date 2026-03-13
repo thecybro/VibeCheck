@@ -2,10 +2,12 @@
   "manifest_version": 3,
   "name": "VibeCheck",
   "version": "0.1.0",
-  "description": "Filter negative content from your social feeds",
+  "description": "A customizable sentiment filter for your social media feed. Block toxic, angry, or negative content automatically.",
 
   "permissions": [
-    "storage"
+    "storage",
+    "activeTab",
+    "scripting"
   ],
 
   "host_permissions": [
@@ -15,8 +17,24 @@
     "http://localhost:8000/*"
   ],
 
+  "action": {
+  "default_popup": "src/popup/popup.html",
+  "default_icon": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+
   "background": {
-    "service_worker": "src/background/index.ts",
+    "service_worker": "src/background/background.ts",
     "type": "module"
   },
 
@@ -26,9 +44,5 @@
       "js": ["src/content/twitter.ts"],
       "run_at": "document_idle"
     }
-  ],
-
-  "action": {
-    "default_popup": "src/popup/index.html"
-  }
+  ]
 }
