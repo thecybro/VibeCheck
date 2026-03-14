@@ -113,6 +113,14 @@ Open Twitter/X, Reddit, or LinkedIn and start scrolling. VibeCheck will automati
 
 ---
 
+## Screenshots
+
+<div align="center">
+  <img src="https://github.com/thecybro/VibeCheck/blob/main/previews/popup.png" width="320" alt="VibeCheck Popup" />
+  <img src="https://github.com/thecybro/VibeCheck/blob/main/previews/whitelist.png" width="320" alt="Whitelist" />
+  <img src="https://github.com/thecybro/VibeCheck/blob/main/previews/overlay.png" width="320" alt="Blur Overlay" />
+</div>
+
 ## Usage
 
 Click the **VibeCheck icon** in your Chrome toolbar to open the dashboard.
