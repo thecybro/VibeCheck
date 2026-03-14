@@ -2,6 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from transformers import pipeline
 
+import os
+import signal
+from threading import Timer
+
 app = FastAPI()
 
 app.add_middleware(
@@ -61,6 +65,13 @@ classifier = pipeline(
 )
 
 print("Model loaded successfully!")
+
+@app.get("/shutdown")
+def shutdown():
+    def stop():
+        os.kill(os.getpid(), signal.SIGTERM)
+    Timer(0.5, stop).start()
+    return {"status": "shutting down"}
 
 @app.get("/health")
 def health():

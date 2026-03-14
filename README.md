@@ -52,9 +52,8 @@ VibeCheck runs a full NLP pipeline entirely on your machine:
 
 ### Step 1 — Download VibeCheck
 
-1. Click the green **"Code"** button at the top of this page
-2. Click **"Download ZIP"**
-3. Extract the ZIP file anywhere on your computer (e.g. Desktop)
+1. Click **"[Download ZIP](https://github.com/thecybro/VibeCheck/archive/refs/heads/main.zip)"**
+2. Extract the ZIP file anywhere on your computer (e.g. Desktop)
 
 ---
 

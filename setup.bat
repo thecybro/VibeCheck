@@ -86,6 +86,21 @@ echo call venv\Scripts\activate >> start.bat
 echo uvicorn main:app >> start.bat
 echo  ✓ Start script created.
 
+:: ─── Auto-startup on Windows boot ───────────────────────────────────────────
+echo.
+echo Would you like VibeCheck to start automatically when Windows boots?
+echo (Recommended for non-technical users)
+echo.
+set /p STARTUP="Enter Y for Yes, N for No: "
+if /i "%STARTUP%"=="Y" (
+    echo Creating Windows startup entry...
+    set SCRIPT_PATH=%~dp0start.bat
+    reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "VibeCheck" /t REG_SZ /d "%SCRIPT_PATH%" /f >nul
+    echo  ✓ VibeCheck will now start automatically on Windows boot.
+) else (
+    echo  Skipped auto-startup.
+)
+
 :: ─── Done ─────────────────────────────────────────────────────────────────
 echo.
 echo  ============================================

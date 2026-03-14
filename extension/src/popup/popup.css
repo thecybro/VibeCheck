@@ -49,6 +49,66 @@ body {
     margin-bottom: 10px;
 }
 
+.server-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.server-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6b7280;
+  flex-shrink: 0;
+  transition: background 0.3s ease;
+}
+
+.server-dot.online {
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+}
+
+.server-dot.offline {
+  background: #ef4444;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+}
+
+.server-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.server-btn {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.server-btn.stop {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.server-btn.stop:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+.server-btn.start {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.server-btn.start:hover {
+  background: rgba(34, 197, 94, 0.25);
+}
+
 .logo {
     display: flex;
     align-items: center;

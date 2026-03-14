@@ -32,6 +32,7 @@ async function init() {
   renderEmotions();
   renderWhitelist();
   updateMasterToggle();
+  checkServer();
   updateStats();
   updateSensitivity();
 }
@@ -206,6 +207,63 @@ document.querySelectorAll('.tab').forEach(tab => {
     if (tabName) document.getElementById(`panel-${tabName}`)?.classList.add('active');
   });
 });
+
+async function checkServer(): Promise<void> {
+  const dot = document.getElementById('serverDot')
+  const label = document.getElementById('serverLabel')
+  const btn = document.getElementById('serverBtn') as HTMLButtonElement
+
+  try {
+    const res = await fetch('http://localhost:8000/health', {
+      signal: AbortSignal.timeout(2000) // 2 second timeout
+    })
+
+    if (res.ok) {
+      dot?.classList.remove('offline')
+      dot?.classList.add('online')
+      if (label) label.textContent = 'Server: Connected'
+      if (btn) {
+        btn.style.display = 'inline-block'
+        btn.textContent = 'Stop'
+        btn.className = 'server-btn stop'
+        btn.onclick = stopServer
+      }
+    }
+  } catch {
+    dot?.classList.remove('online')
+    dot?.classList.add('offline')
+    if (label) label.textContent = 'Server: Offline'
+    if (btn) {
+      btn.style.display = 'inline-block'
+      btn.textContent = 'Start'
+      btn.className = 'server-btn start'
+      btn.onclick = showStartInstruction
+    }
+  }
+
+  setTimeout(checkServer, 5000)
+}
+
+async function stopServer(): Promise<void> {
+  const btn = document.getElementById('serverBtn') as HTMLButtonElement
+  if (btn) btn.textContent = 'Stopping...'
+
+  try {
+    await fetch('http://localhost:8000/shutdown')
+  } catch {
+    // Server closes connection when shutting down
+  }
+
+  setTimeout(checkServer, 1000)
+}
+
+function showStartInstruction(): void {
+  const label = document.getElementById('serverLabel')
+  if (label) {
+    label.textContent = 'Run start.bat to start the server'
+    setTimeout(checkServer, 3000)
+  }
+}
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local' && changes.vibecheck_stats) {
