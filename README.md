@@ -92,12 +92,11 @@ If you chose **Yes** to auto-startup during setup, the server will start automat
 If you chose **No**, double-click `start.bat` in the VibeCheck folder each time you want to use VibeCheck.
 
 > ⚠️ The server window must stay open while browsing. You can minimise it but do not close it.
-```
 
 **Remove one of the duplicate "You're all set!" sections.**
 
 **Update project structure: add:**
-
+```
 ├── uninstall-startup.bat        # Remove auto-startup from Windows boot
 ```
 
