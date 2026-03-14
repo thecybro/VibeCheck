@@ -93,18 +93,6 @@ If you chose **No**, double-click `start.bat` in the VibeCheck folder each time 
 
 > ⚠️ The server window must stay open while browsing. You can minimise it but do not close it.
 
-**Remove one of the duplicate "You're all set!" sections.**
-
-**Update project structure: add:**
-```
-├── uninstall-startup.bat        # Remove auto-startup from Windows boot
-```
-
-**Add to Troubleshooting:**
-
-**Want to disable auto-startup?**
-- Double-click `uninstall-startup.bat` in the VibeCheck folder.
-
 ---
 
 ### You're all set!
