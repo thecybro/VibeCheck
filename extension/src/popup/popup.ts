@@ -127,11 +127,22 @@ document.querySelectorAll('.sens-btn').forEach(btn => {
 
 function updateStats() {
   chrome.storage.local.get('vibecheck_stats', (result) => {
-    const Stats = (result.vibecheck_stats ?? {blocked: 0, analyzed: 0, revealed: 0}) as {blocked: number, analyzed: number, revealed: number}
+    const stats = result.vibecheck_stats as {blocked: number, analyzed: number, revealed: number}
     
-    chrome.storage.local.set({vibecheck_stats: Stats})
+    // chrome.storage.local.set({vibecheck_stats: Stats})
 
-    console.log(`[VibeCheck] Stats have been updated: ${result.vibecheck_stats}`)
+    if (stats){
+      const blocked = document.getElementById("statBlocked");
+      const analyzed = document.getElementById("statAnalyzed");
+      const revealed = document.getElementById("statRevealed");
+
+      if (blocked) blocked.textContent = String(stats.blocked || 0);
+      if (analyzed) analyzed.textContent = String(stats.analyzed || 0);
+      if (revealed) revealed.textContent = String(stats.revealed || 0);
+
+      }
+
+    console.log(`[VibeCheck] Stats have been updated: ${stats}`)
   })
 }
 
@@ -288,6 +299,14 @@ chrome.storage.onChanged.addListener((changes, area) => {
     }
   }
 });
+
+// chrome.storage.local.get('vibecheck_stats', (result) => {
+//   const stats = (result.vibecheck_stats ?? {blocked: 0, analyzed: 0, revealed: 0}) as {blocked: number, analyzed: number, revealed: number};
+//   chrome.storage.local.set({vibecheck_stats: stats})
+  
+//   updateStats();
+// })
+
 
 init();
 
