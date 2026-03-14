@@ -41,88 +41,68 @@ VibeCheck runs a full NLP pipeline entirely on your machine:
 - **Supported platforms** — Twitter/X, Reddit, LinkedIn
 
 ---
-
 ## Installation
 
-### What you need before starting (skip if yo ualready have these)
-- **Python 3.10 or higher** — [Download here](https://www.python.org/downloads/) *(check "Add Python to PATH" during install)*
-- **Node.js 18 or higher** — [Download here](https://nodejs.org/)
+### What you need before starting (skip if you already have these)
+- **Python 3.10 or higher** — [Download here](https://www.python.org/downloads/)
+  > ⚠️ During installation, check **"Add Python to PATH"** — this is important
 - **Google Chrome** browser
-- **Git** — [Download here](https://git-scm.com/)
 
 ---
 
-### Step 1 — Clone the repository
+### Step 1 — Download VibeCheck
 
-Open a terminal (Command Prompt or PowerShell on Windows) and run:
-
-```bash
-git clone https://github.com/thecybro/VibeCheck.git
-cd VibeCheck
-```
+1. Click the green **"Code"** button at the top of this page
+2. Click **"Download ZIP"**
+3. Extract the ZIP file anywhere on your computer (e.g. Desktop)
 
 ---
 
 ### Step 2 — Run the setup script
 
-**Windows:**
-```
-Double-click setup.bat
-```
-Or from terminal:
-```bash
-setup.bat
-```
+Open the extracted `VibeCheck` folder and **double-click `setup.bat`** (needed for first time only)
 
-This script will automatically:
+A window will open and automatically:
 - Check your Python installation
 - Create a Python virtual environment
-- Install all backend dependencies (FastAPI, PyTorch, Transformers)
-- Download the NLP model (~330MB, one time only, cached locally after)
-- Create a `start.bat` shortcut for launching the server
+- Install all dependencies (FastAPI, PyTorch, Transformers)
+- Download the NLP model (~330MB, one time only, cached after)
 
-> First run takes 5-10 minutes depending on your internet speed. Subsequent runs are instant.
+> ⏱️ First run takes 5–10 minutes depending on your internet speed. Just let it run — don't close the window.
 
----
-
-### Step 3 — Build the Chrome extension
-
-```bash
-cd extension
-npm install
-npm run build
-```
-
-This compiles the TypeScript source into a production-ready extension in `extension/dist/`.
+When you see **"Setup Complete!"** you're ready to continue.
 
 ---
 
-### Step 4 — Load the extension in Chrome
+### Step 3 — Load the extension in Chrome
 
-1. Open Chrome and navigate to `chrome://extensions`
+1. Open Chrome and go to `chrome://extensions` in the address bar
 2. Enable **Developer Mode** using the toggle in the top-right corner
 3. Click **"Load unpacked"**
-4. Navigate to and select the `extension/dist` folder
-5. The VibeCheck shield icon will appear in your Chrome toolbar
+4. Navigate into the extracted `VibeCheck` folder → open `extension` → select the `dist` folder
+5. The VibeCheck 🛡️ icon will appear in your Chrome toolbar
+
+This only needs to be done once.
 
 ---
 
-### Step 5 — Start the server
+### Step 4 — Start VibeCheck
 
-Every time you want to use VibeCheck, start the backend server first:
+Every time you want to use VibeCheck, **double-click `start.bat`** in the VibeCheck folder.
 
-**Windows:**
-```
-Double-click start.bat
-```
-
-You will see:
+A window will appear showing:
 ```
 Server is running at http://localhost:8000
 Keep this window open while using VibeCheck.
 ```
 
-> **Important:** Keep this terminal window open while browsing. The extension needs the server running to classify posts. You can minimise it — just do not close it.
+> ⚠️ **Keep this window open** while browsing. You can minimise it but do not close it. The extension needs this server running to analyse posts.
+
+---
+
+### You're all set!
+
+Open Twitter/X, Reddit, or LinkedIn and start scrolling. VibeCheck will automatically analyse posts and blur any that match your blocked emotion categories.
 
 ---
 
