@@ -1,131 +1,257 @@
+# 🛡️ VibeCheck — Sentiment Shield
 
-# 🛡️ VibeCheck — Sentiment Shield Browser Extension
-
-A customizable sentiment filter for your social media feed.
-
-**VibeCheck** automatically analyzes post content using NLP and hides negative, toxic, or aggressive posts behind a blur overlay.
-> **Notes:**  
-> **1. Since it uses local analysis (if API Key not added), it might show overlay for normal content as well, will be improved on demand.**
->
-> 2. Feature to add supported platforms isn't added yet, enjoy 4 supported platforms for now.
->
-> 3. For now, it supports Claude only, OpenAI API Key is just a placeholder for now, it will be added on demand.
-
----
-
-## Features
-
-- **Real-time DOM scanning** — detects new posts as you scroll
-- **7 emotion categories** — Anger, Toxicity, Aggression, Negativity, Sadness, Fear, Spam
-- **Blur overlay with "Reveal Anyway"** button
-- **Sensitivity control** — Low / Medium / High thresholds
-- **Whitelist** — specific users always show through
-- **Stats dashboard** — see how many posts were analyzed, blocked, and revealed
-- **Claude AI integration** — optional API key for deeper analysis; works without one via local heuristics
-- **Supported platforms:** Twitter/X, Reddit, LinkedIn, Facebook
-
----
-
-## Installation
-
-<!-- ### Direct download:
-**If not available in store:**
-- **Click [VibeCheck](https://github.com/thecybro/VibeCheck/releases/download/v1.0.0/VibeCheck.crx)** -->
-
----
-
-## Configuration
-
-Click the **VibeCheck** icon in your toolbar to open the dashboard:
-
-### Filters Tab
-- Toggle which emotions to block (Anger, Toxicity, etc.)
-- Set sensitivity: **Low** (only extreme content), **Medium** (balanced), **High** (catches more)
-
-### Whitelist Tab
-- Add usernames or display names — their posts always appear unfiltered
-
-### Settings Tab
-- **AI API Key (optional):** Paste API Key of the AI you use for AI-powered analysis. Without a key, **VibeCheck** uses fast local pattern matching.
-
-> ***Note:*** **VibeCheck** doesn't send your API Key anywhere and it runs locally.
-
+> A Chrome extension that automatically detects and filters negative, toxic, or emotionally harmful content from your social media feeds in real time — powered by a local NLP model, no data ever leaves your machine.
 
 ---
 
 ## How It Works
 
-1. **Content Script** monitors the DOM using a `MutationObserver`
-2. New posts are detected, text is extracted using platform-specific selectors
-3. Text is sent to the **Background Service Worker** for analysis
-4. With an API key → `Claude Haiku` (my favourite) or your favourite AI analyzes sentiment and returns emotion scores (only supports claude for now)
-5. Without an API key → Local keyword heuristics provide instant analysis
-6. If a blocked emotion exceeds the sensitivity threshold → blur overlay is applied
-7. User can click **"Reveal Anyway"** to dismiss the overlay
+VibeCheck runs a full NLP pipeline entirely on your machine:
+
+1. A **content script** monitors your feed using `MutationObserver`, detecting new posts as you scroll
+2. Post text is extracted using platform-specific DOM selectors and sent to the **background service worker**
+3. The background worker forwards the text to a **local FastAPI server** running a fine-tuned transformer model
+4. The model (`SamLowe/roberta-base-go_emotions`) classifies the text across 28 emotion categories
+5. Detected emotions are mapped to VibeCheck's 4 categories: `anger`, `toxicity`, `fear`, `sadness`
+6. If a blocked emotion exceeds the user's sensitivity threshold a **blur overlay** is applied
+7. The user can click **"Reveal Anyway"** to dismiss the overlay at any time
 
 ---
 
-## File Structure
+## Tech Stack
 
-<!-- ```
+| Layer | Technology |
+|---|---|
+| Extension | Chrome Manifest V3, TypeScript, Vite + CRXJS |
+| ML Backend | Python, FastAPI, Uvicorn |
+| NLP Model | `SamLowe/roberta-base-go_emotions` (HuggingFace Transformers) |
+| Storage | `chrome.storage.sync` (settings), `chrome.storage.local` (stats) |
+
+---
+
+## Features
+
+- **Real-time post detection** via `MutationObserver` with debouncing
+- **4 emotion categories** — Anger, Toxicity, Fear, Sadness — each individually toggleable
+- **Blur overlay** with smooth animation and "Reveal Anyway" button
+- **Sensitivity control** — Low / Medium / High confidence thresholds
+- **Master toggle** — instantly pause protection without changing your settings
+- **Whitelist** — specific users always show through unfiltered
+- **Live stats dashboard** — posts analyzed, blocked, and revealed
+- **Supported platforms** — Twitter/X, Reddit, LinkedIn
+
+---
+
+## Installation
+
+### What you need before starting (skip if yo ualready have these)
+- **Python 3.10 or higher** — [Download here](https://www.python.org/downloads/) *(check "Add Python to PATH" during install)*
+- **Node.js 18 or higher** — [Download here](https://nodejs.org/)
+- **Google Chrome** browser
+- **Git** — [Download here](https://git-scm.com/)
+
+---
+
+### Step 1 — Clone the repository
+
+Open a terminal (Command Prompt or PowerShell on Windows) and run:
+
+```bash
+git clone https://github.com/thecybro/VibeCheck.git
+cd VibeCheck
+```
+
+---
+
+### Step 2 — Run the setup script
+
+**Windows:**
+```
+Double-click setup.bat
+```
+Or from terminal:
+```bash
+setup.bat
+```
+
+This script will automatically:
+- Check your Python installation
+- Create a Python virtual environment
+- Install all backend dependencies (FastAPI, PyTorch, Transformers)
+- Download the NLP model (~330MB, one time only, cached locally after)
+- Create a `start.bat` shortcut for launching the server
+
+> First run takes 5-10 minutes depending on your internet speed. Subsequent runs are instant.
+
+---
+
+### Step 3 — Build the Chrome extension
+
+```bash
+cd extension
+npm install
+npm run build
+```
+
+This compiles the TypeScript source into a production-ready extension in `extension/dist/`.
+
+---
+
+### Step 4 — Load the extension in Chrome
+
+1. Open Chrome and navigate to `chrome://extensions`
+2. Enable **Developer Mode** using the toggle in the top-right corner
+3. Click **"Load unpacked"**
+4. Navigate to and select the `extension/dist` folder
+5. The VibeCheck shield icon will appear in your Chrome toolbar
+
+---
+
+### Step 5 — Start the server
+
+Every time you want to use VibeCheck, start the backend server first:
+
+**Windows:**
+```
+Double-click start.bat
+```
+
+You will see:
+```
+Server is running at http://localhost:8000
+Keep this window open while using VibeCheck.
+```
+
+> **Important:** Keep this terminal window open while browsing. The extension needs the server running to classify posts. You can minimise it — just do not close it.
+
+---
+
+### You are all set!
+
+Open Twitter/X, Reddit, or LinkedIn and start scrolling. VibeCheck will automatically analyse posts and blur any that match your blocked emotion categories.
+
+---
+
+## Usage
+
+Click the **VibeCheck icon** in your Chrome toolbar to open the dashboard.
+
+### Filters Tab
+- Toggle which emotions to block individually
+- Set your sensitivity level:
+  - **Low** — only flags content with 85%+ model confidence (fewer false positives)
+  - **Medium** — balanced at 75% confidence (recommended)
+  - **High** — flags anything above 60% confidence (catches more, may flag edge cases)
+
+### Whitelist Tab
+- Add usernames whose posts should always appear unfiltered
+- Supports Twitter handles, Reddit usernames, and LinkedIn display names
+- Type the username without @ and press Add or Enter
+
+---
+
+## Emotion Categories
+
+VibeCheck uses the `SamLowe/roberta-base-go_emotions` model trained on the Google GoEmotions dataset (58,000 Reddit comments, 28 emotion labels). The model output is mapped to 4 actionable VibeCheck categories:
+
+| VibeCheck Category | Mapped From | Blocked by Default |
+|---|---|---|
+| anger | anger | Yes |
+| toxicity | disgust | Yes |
+| fear | fear | No (user choice) |
+| sadness | sadness | No (user choice) |
+| safe | joy, admiration, amusement, approval, caring, curiosity, excitement, gratitude, love, optimism, pride, relief, surprise, neutral, and others | Never blocked |
+
+---
+
+## Project Structure
+
+```
 VibeCheck/
-├── manifest.json          # Extension config (Manifest V3)
-├── popup.html             # Settings dashboard UI
-├── popup.js               # Dashboard logic
-├── icons/                 # Extension icons
-│   ├── icon16.png
-│   ├── icon32.png
-│   ├── icon48.png
-│   └── icon128.png
-├── previews/                # Extension previews
-│   ├── filters.png
-│   ├── overlay.png
-│   ├── settings.png
-│   └── whitelist.png
-└── src/
-    ├── background.js      # Service worker (analysis engine)
-    ├── content.js         # DOM scanner & overlay injector
-    ├── patterns.json      # Library of trigger words
-    └── overlay.css        # Blur overlay styles
-``` -->
-
-```
-└── VibeCheck
-    └── backend
-        ├── main.py
-    └── extension
-        └── src
-            └── background
-                ├── background.ts
-            └── content
-                ├── twitter.ts
-            └── popup
-                ├── popup.html
-                ├── popup.css
-                └── popup.js
-        ├── eslint.config.js
-        ├── manifest.json
-        ├── package-lock.json
-        ├── package.json
-        ├── README.md
-        ├── tsconfig.app.json
-        ├── tsconfig.json
-        ├── tsconfig.node.json
-        └── vite.config.ts
-    ├── .gitignore
-    └── README.md
+├── setup.bat                    # One-time setup script (Windows)
+├── start.bat                    # Start the backend server
+│
+├── backend/
+│   ├── main.py                  # FastAPI server + HuggingFace pipeline
+│   └── venv/                    # Python virtual environment (auto-created)
+│
+├── extension/
+│   ├── src/
+│   │   ├── background/
+│   │   │   └── background.ts    # Service worker — API calls, settings cache
+│   │   ├── content/
+│   │   │   ├── shared.ts        # Shared logic — overlay, classification, stats
+│   │   │   ├── twitter.ts       # Twitter/X DOM selectors
+│   │   │   ├── reddit.ts        # Reddit DOM selectors
+│   │   │   ├── linkedin.ts      # LinkedIn DOM selectors
+│   │   │   └── overlay.css      # Blur overlay styles
+│   │   └── popup/
+│   │       ├── popup.html       # Settings dashboard UI
+│   │       ├── popup.ts         # Dashboard logic (TypeScript)
+│   │       └── popup.css        # Dashboard styles
+│   ├── manifest.json            # Chrome extension manifest (MV3)
+│   ├── vite.config.ts           # Vite + CRXJS build config
+│   └── package.json
+│
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-## 🔒 Privacy
+## Adding a New Platform
 
-- No data is ever stored or transmitted without your consent
-- Text is only sent to API provider if you provide your own API key
-- The extension only activates on supported social media domains
-- All analysis results are cached locally for performance
+VibeCheck is built to be easily extended. To add support for a new platform:
+
+1. Create `extension/src/content/platformname.ts`
+2. Add these imports at the top:
+```typescript
+import { sendForClassification } from './shared'
+import './overlay.css'
+```
+3. Define three things specific to the platform:
+   - `SELECTOR` — CSS selector that finds a post container element
+   - `extractText(element)` — function that returns the post text content
+   - `extractUsername(element)` — function that returns the author username
+4. Add the MutationObserver (copy from any existing platform file)
+5. Register the platform in `manifest.json`:
+   - Add the domain to `host_permissions`
+   - Add a new entry to `content_scripts` with the correct `matches` and `js` path
 
 ---
-## Extending VibeCheck (until the ui option is added)
 
-To add a new platform, add a selector config to `PLATFORM_CONFIG` in `src/content.js` and add the domain to `host_permissions` and `content_scripts.matches` in `manifest.json`.
+## Troubleshooting
+
+**Extension not working or posts not being blurred**
+Make sure `start.bat` is running and the server is active. Check that the emotion you expect to be blocked is toggled ON in the Filters tab. Try refreshing the page.
+
+**Setup script fails at model download**
+Check your internet connection. The model is ~330MB. If it fails midway, run `setup.bat` again — it will resume.
+
+**"Load unpacked" button is missing in Chrome**
+Make sure Developer Mode is enabled (toggle in the top-right of `chrome://extensions`).
+
+---
+
+## Privacy
+
+- All text classification runs entirely on your local machine
+- No post content is ever sent to any external server
+- The NLP model runs locally via your Python backend
+- Settings and stats are stored locally in Chrome storage
+- The extension only activates on its declared social media domains
+
+---
+
+## Known Limitations
+
+- **Text only** — images, videos, and memes are not analysed
+- **English-first** — the model performs best on English text
+- **Latency** — there is a 300-800ms delay before the overlay appears due to local CPU inference
+- **Context** — very short captions without supporting context may occasionally be misclassified
+
+---
+
+## License
+
+MIT

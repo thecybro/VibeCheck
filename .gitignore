@@ -1,6 +1,6 @@
 # ─── Node / Extension ─────────────────────────────
 node_modules
-dist
+# dist
 dist-ssr
 *.local
 

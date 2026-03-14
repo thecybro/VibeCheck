@@ -1,0 +1,73 @@
+{
+  "../../@crx/manifest": {
+    "file": "assets/crx-manifest.js-BzaAnoN5.js",
+    "name": "crx-manifest.js",
+    "src": "../../@crx/manifest",
+    "isEntry": true
+  },
+  "_linkedin.ts-loader-Caqm3yzH.js": {
+    "file": "assets/linkedin.ts-loader-Caqm3yzH.js",
+    "src": "_linkedin.ts-loader-Caqm3yzH.js"
+  },
+  "_reddit.ts-loader-CW-BBPNa.js": {
+    "file": "assets/reddit.ts-loader-CW-BBPNa.js",
+    "src": "_reddit.ts-loader-CW-BBPNa.js"
+  },
+  "_shared-GwLJ9207.css": {
+    "file": "assets/shared-GwLJ9207.css",
+    "src": "_shared-GwLJ9207.css"
+  },
+  "_shared-KlEBV7Rb.js": {
+    "file": "assets/shared-KlEBV7Rb.js",
+    "name": "shared",
+    "css": [
+      "assets/shared-GwLJ9207.css"
+    ]
+  },
+  "_twitter.ts-loader-CzFEw8Lg.js": {
+    "file": "assets/twitter.ts-loader-CzFEw8Lg.js",
+    "src": "_twitter.ts-loader-CzFEw8Lg.js"
+  },
+  "src/background/background.ts": {
+    "file": "assets/background.ts-CB0uiYiN.js",
+    "name": "background.ts",
+    "src": "src/background/background.ts",
+    "isEntry": true
+  },
+  "src/content/linkedin.ts": {
+    "file": "assets/linkedin.ts-6TyWdUMM.js",
+    "name": "linkedin.ts",
+    "src": "src/content/linkedin.ts",
+    "isEntry": true,
+    "imports": [
+      "_shared-KlEBV7Rb.js"
+    ]
+  },
+  "src/content/reddit.ts": {
+    "file": "assets/reddit.ts-CTKg0TGu.js",
+    "name": "reddit.ts",
+    "src": "src/content/reddit.ts",
+    "isEntry": true,
+    "imports": [
+      "_shared-KlEBV7Rb.js"
+    ]
+  },
+  "src/content/twitter.ts": {
+    "file": "assets/twitter.ts-CaMfrsr9.js",
+    "name": "twitter.ts",
+    "src": "src/content/twitter.ts",
+    "isEntry": true,
+    "imports": [
+      "_shared-KlEBV7Rb.js"
+    ]
+  },
+  "src/popup/popup.html": {
+    "file": "assets/popup.html-BFHGWXLR.js",
+    "name": "popup.html",
+    "src": "src/popup/popup.html",
+    "isEntry": true,
+    "css": [
+      "assets/popup-BLxFUE4d.css"
+    ]
+  }
+}
