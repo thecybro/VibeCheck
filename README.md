@@ -151,7 +151,7 @@ VibeCheck uses the `SamLowe/roberta-base-go_emotions` model trained on the Googl
 VibeCheck/
 ├── setup.bat                    # One-time setup script (Windows)
 ├── start.bat                    # Start the backend server
-├── uninstall-startup.bat                   
+├── uninstall-startup.bat        # Remove VibeCheck from Windows auto-startup     
 │
 ├── backend/
 │   ├── main.py                  # FastAPI server + HuggingFace pipeline
