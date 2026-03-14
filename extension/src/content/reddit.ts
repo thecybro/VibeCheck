@@ -4,22 +4,19 @@
 import {sendForClassification} from './shared'
 import './overlay.css'
 
-const SELECTOR = '[data-testid="tweet"]'
-const POST_SELECTOR = '[data-testid="tweetText"]'
+const SELECTOR = 'article'
+const POST_SELECTOR = 'shreddit-post'
 
 function extractText(element: Element): string {
-    // Twitter puts tweet text inside this specific element
-    const textEl = element.querySelector(POST_SELECTOR)
-    if (!textEl) return ""
-    
-    return textEl.textContent?.trim() ?? ""
+    const post = element.querySelector(POST_SELECTOR)
+    if (!post) return ""
+    const title = post.getAttribute('post-title') ?? ""
+    const body = post.textContent?.trim() ?? ""
+    return `${title} ${body}`.trim()
 }
 
 function extractUsername(element: Element): string {
-    const href = element
-        .querySelector('[data-testid="User-Name"] a[href]')
-        ?.getAttribute('href') ?? ''
-    return href.replace('/', '').trim()
+    return element.querySelector('shreddit-post')?.getAttribute('author') ?? ''
 }
 
 function processPost(element: Element): void {
@@ -40,7 +37,6 @@ function processPost(element: Element): void {
     })
 }
 
-
 // Process tweets already on the page
 document.querySelectorAll(SELECTOR).forEach(processPost)
 
@@ -58,4 +54,4 @@ observer.observe(document.body, {
     subtree: true     // watch the entire document tree
 })
 
-console.log("[VibeCheck] Twitter content script loaded")
+console.log("[VibeCheck] Reddit content script loaded")

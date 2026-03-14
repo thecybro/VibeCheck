@@ -8,12 +8,12 @@ const DEFAULT_SETTINGS = {
   apiKey: '',
   blockedEmotions: {
     anger: true,
-    toxicity: true,
+    fear: true,
     sadness: false,
-    fear: false,
-    negativity: true,
-    aggression: true,
-    spam: false
+    toxicity: false,
+    // negativity: true,
+    // aggression: true,
+    // spam: false
   } as Record<string, boolean>,
 
   whitelist: [] as string[],
@@ -42,25 +42,32 @@ chrome.storage.onChanged.addListener((changes, area) => {
 
 chrome.runtime.onMessage.addListener((message, sender) => {
 
-    if (message.type === "CLASSIFY_POST") {
+    if (!cachedSettings.enabled) return true
 
+    if (message.type === "CLASSIFY_POST") {
         // We must tell chrome that:
         // We are doing asynchronous work, so keep this channel open
 
         fetch("http://localhost:8000/classify", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({text: message.text})
+            body: JSON.stringify({text: message.text, sensitivity: cachedSettings.sensitivity})
         })
         .then(res => res.json())
         .then(data => {
+
+            const userWantsToBlock = cachedSettings.blockedEmotions[data.emotion]
+            const block = data.blocked && userWantsToBlock
+
             if (sender.tab?.id){
                 chrome.tabs.sendMessage(sender.tab.id, {
                     type: "CLASSIFICATION_RESULT",
                     postId: message.postId,
                     text: message.text,
-                    shouldBlock: data.blocked,
+                    shouldBlock: block,
                     emotion: data.emotion,
+                    threshold: data.threshold,
+                    score: data.raw_score,
                     confidence: data.confidence
                 })
             }

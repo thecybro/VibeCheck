@@ -3,12 +3,12 @@ const DEFAULT_SETTINGS = {
   apiKey: '',
   blockedEmotions: {
     anger: true,
-    toxicity: true,
+    fear: true,
     sadness: false,
-    fear: false,
-    negativity: true,
-    aggression: true,
-    spam: false
+    toxicity: false,
+    // negativity: true,
+    // aggression: true,
+    // spam: false
   } as Record<string, boolean>,
 
   whitelist: [] as string[],
@@ -19,13 +19,14 @@ const DEFAULT_SETTINGS = {
 
 const EMOTIONS = [
   { key: 'anger',      emoji: '😡', name: 'Anger',      desc: 'Hostile, furious, or outraged content' },
-  { key: 'toxicity',   emoji: '☠️', name: 'Toxicity',   desc: 'Harmful, abusive, or hateful language' },
-  { key: 'aggression', emoji: '⚔️', name: 'Aggression', desc: 'Threatening or combative posts' },
-  { key: 'negativity', emoji: '🌧',  name: 'Negativity', desc: 'Pessimistic or doom-and-gloom content' },
-  { key: 'sadness',    emoji: '😢', name: 'Sadness',     desc: 'Distressing or depressive content' },
   { key: 'fear',       emoji: '😱', name: 'Fear',        desc: 'Alarming, panic-inducing posts' },
-  { key: 'spam',       emoji: '📢', name: 'Spam',        desc: 'Promotional or repetitive content' }
+  { key: 'sadness',    emoji: '😢', name: 'Sadness',     desc: 'Distressing or depressive content' },
+  { key: 'toxicity',   emoji: '☠️', name: 'Toxicity',   desc: 'Harmful, abusive, or hateful language' },
+  // { key: 'aggression', emoji: '⚔️', name: 'Aggression', desc: 'Threatening or combative posts' },
+  // { key: 'negativity', emoji: '🌧',  name: 'Negativity', desc: 'Pessimistic or doom-and-gloom content' },
+  // { key: 'spam',       emoji: '📢', name: 'Spam',        desc: 'Promotional or repetitive content' }
 ];
+
 
 type Settings = typeof DEFAULT_SETTINGS;
 let settings: Settings | null = null;
@@ -129,8 +130,6 @@ function updateStats() {
   chrome.storage.local.get('vibecheck_stats', (result) => {
     const stats = result.vibecheck_stats as {blocked: number, analyzed: number, revealed: number}
     
-    // chrome.storage.local.set({vibecheck_stats: Stats})
-
     if (stats){
       const blocked = document.getElementById("statBlocked");
       const analyzed = document.getElementById("statAnalyzed");
@@ -142,7 +141,6 @@ function updateStats() {
 
       }
 
-    console.log(`[VibeCheck] Stats have been updated: ${stats}`)
   })
 }
 
@@ -300,13 +298,4 @@ chrome.storage.onChanged.addListener((changes, area) => {
   }
 });
 
-// chrome.storage.local.get('vibecheck_stats', (result) => {
-//   const stats = (result.vibecheck_stats ?? {blocked: 0, analyzed: 0, revealed: 0}) as {blocked: number, analyzed: number, revealed: number};
-//   chrome.storage.local.set({vibecheck_stats: stats})
-  
-//   updateStats();
-// })
-
-
 init();
-

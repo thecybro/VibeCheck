@@ -13,20 +13,51 @@ app.add_middleware(
 
 EMOTION_MAP = {
     "anger": "anger",
-    "disgust": "toxicity",
-    "fear": "fear",
+    "annoyance": "anger",
+
     "sadness": "sadness",
+    "grief": "sadness",
+    "remorse": "sadness",
+
+    "fear": "fear",
+
+    "disgust": "toxicity",
+
+    "admiration": None,
+    "amusement": None,
+    "approval": None,
+    "caring": None,
+    "confusion": None,
+    "curiosity": None,
+    "desire": None,
+    "disappointment": None,
+    "disapproval": None,
+    "embarrassment": None,
+    "excitement": None,
+    "gratitude": None,
     "joy": None,
+    "love": None,
+    "nervousness": None,
+    "optimism": None,
+    "pride": None,
+    "realization": None,
+    "relief": None,
     "surprise": None,
     "neutral": None,
+}
+
+SENSITIVITY_MAP = {
+    "high": 0.45,
+    "medium": 0.65,
+    "low": 0.75,
 }
 
 print("Loading the model...")
 
 classifier = pipeline(
     task="text-classification",
-    model="j-hartmann/emotion-english-distilroberta-base",
-    top_k=2
+    model="SamLowe/roberta-base-go_emotions",
+    top_k=None
 )
 
 print("Model loaded successfully!")
@@ -38,32 +69,35 @@ def health():
 @app.post("/classify")
 def classify(content: dict):
     text=content.get("text", "")
+    sensitivity=content.get("sensitivity", "medium")
 
     if not text:
         return {"error": "Text not found!"}
 
-    if len(text.strip()) < 30:
-        return {"error": "Text is too short!"}
+    # if len(text.strip()) < 30:
+    #     return {"error": "Text is too short!"}
 
     result = classifier(text)
     final = result[0][0]
 
     raw_label = final["label"].lower()
 
-    raw_score = final["score"]
+    raw_score = round(final["score"], 2)
 
-    confidence = (round(final["score"] * 100, 4))
+    confidence = (round(final["score"] * 100))
 
     emotion = EMOTION_MAP.get(raw_label, None)
 
-    if raw_score < 0.7:
+    threshold = SENSITIVITY_MAP.get(sensitivity, 0.75)
+    if raw_score < threshold:
         emotion = None
-
+        
     return {
         "emotion": emotion,
         "raw_label": raw_label,
         "confidence": confidence,
         "raw_score": raw_score,
+        "threshold": threshold,
         "blocked": emotion is not None
     }
 
