@@ -1,14 +1,10 @@
 const DEFAULT_SETTINGS = {
   enabled: true,
-  apiKey: '',
   blockedEmotions: {
     anger: true,
     fear: true,
     sadness: false,
     toxicity: false,
-    // negativity: true,
-    // aggression: true,
-    // spam: false
   } as Record<string, boolean>,
 
   whitelist: [] as string[],
@@ -38,7 +34,6 @@ async function init() {
   updateMasterToggle();
   updateStats();
   updateSensitivity();
-  loadApiKey();
 }
 
 function getSettings(): Promise<Settings> {
@@ -202,70 +197,6 @@ document.getElementById('whitelistInput')?.addEventListener('keydown', (e) => {
   }
 });
 
-function maskKey(key: string): string {
-  if (!key || key.length <= 8) return key;
-  return key.slice(0, 4) + '•'.repeat(key.length - 8) + key.slice(-4);
-}
-
-function loadApiKey() {
-  if (!settings) return;
-  const input = document.getElementById('apiKeyInput') as HTMLInputElement;
-  if (!input) return;
-  if (settings.apiKey) {
-    input.value = maskKey(settings.apiKey);
-    input.readOnly = true;
-    input.dataset.saved = 'true';
-    const saveBtn = document.getElementById('saveApiBtn');
-    const removeBtn = document.getElementById('removeApiBtn') as HTMLElement;
-    if (saveBtn) saveBtn.textContent = 'Edit';
-    if (removeBtn) removeBtn.style.display = 'inline-block';
-  }
-}
-
-document.getElementById('saveApiBtn')?.addEventListener('click', () => {
-  if (!settings) return;
-  const input = document.getElementById('apiKeyInput') as HTMLInputElement;
-  const btn = document.getElementById('saveApiBtn');
-  if (!input || !btn) return;
-
-  if (btn.textContent === 'Edit') {
-    input.value = '';
-    input.readOnly = false;
-    input.focus();
-    btn.textContent = 'Save';
-    return;
-  }
-
-  const key = input.value.trim();
-  if (!key || key.includes('•')) return;
-
-  settings.apiKey = key;
-  saveSettings();
-  input.value = maskKey(key);
-  input.readOnly = true;
-  input.dataset.saved = 'true';
-  btn.textContent = 'Edit';
-  const removeBtn = document.getElementById('removeApiBtn') as HTMLElement;
-  if (removeBtn) removeBtn.style.display = 'inline-block';
-  showStatus('API key saved!');
-});
-
-document.getElementById('removeApiBtn')?.addEventListener('click', () => {
-  if (!settings) return;
-  const input = document.getElementById('apiKeyInput') as HTMLInputElement;
-  const removeBtn = document.getElementById('removeApiBtn') as HTMLElement;
-  const saveBtn = document.getElementById('saveApiBtn');
-  if (!input) return;
-  settings.apiKey = '';
-  saveSettings();
-  input.value = '';
-  input.readOnly = false;
-  input.dataset.saved = 'false';
-  if (saveBtn) saveBtn.textContent = 'Save';
-  if (removeBtn) removeBtn.style.display = 'none';
-  showStatus('API key removed.');
-});
-
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -275,14 +206,6 @@ document.querySelectorAll('.tab').forEach(tab => {
     if (tabName) document.getElementById(`panel-${tabName}`)?.classList.add('active');
   });
 });
-
-function showStatus(msg: string) {
-  const el = document.getElementById('statusMsg') as HTMLElement;
-  if (!el) return;
-  el.textContent = msg;
-  el.style.opacity = '1';
-  setTimeout(() => { el.style.opacity = '0'; }, 3000);
-}
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local' && changes.vibecheck_stats) {

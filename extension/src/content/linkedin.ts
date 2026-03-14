@@ -1,22 +1,21 @@
 import {sendForClassification} from './shared'
 import './overlay.css'
 
-const SELECTOR = '[data-testid="tweet"]'
-const POST_SELECTOR = '[data-testid="tweetText"]'
+const SELECTOR = '.feed-shared-update-v2'
+const POST_SELECTOR = '.update-components-text'
 
 function extractText(element: Element): string {
     const textEl = element.querySelector(POST_SELECTOR)
     if (!textEl) return ""
-    
     return textEl.textContent?.trim() ?? ""
 }
 
 function extractUsername(element: Element): string {
-    const href = element
-        .querySelector('[data-testid="User-Name"] a[href]')
-        ?.getAttribute('href') ?? ''
-    return href.replace('/', '').trim()
+    return element
+        .querySelector('.update-components-actor__title span[aria-hidden="true"]')
+        ?.textContent?.trim() ?? ''
 }
+
 function processPost(element: Element): void {
     const text = extractText(element)
     
@@ -45,7 +44,7 @@ const observer = new MutationObserver(() => {
 })
 
 observer.observe(document.body, {
-    childList: true,  
-    subtree: true     
+    childList: true,
+    subtree: true
 })
 

@@ -74,8 +74,7 @@ def classify(content: dict):
     if not text:
         return {"error": "Text not found!"}
 
-    # if len(text.strip()) < 30:
-    #     return {"error": "Text is too short!"}
+    text = text[:512]
 
     result = classifier(text)
     final = result[0][0]

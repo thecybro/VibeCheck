@@ -1,6 +1,3 @@
-// Track which posts we've already sent for classification
-// Without this, MutationObserver would send the same post multiple times
-
 import {sendForClassification} from './shared'
 import './overlay.css'
 
@@ -20,24 +17,21 @@ function extractUsername(element: Element): string {
 }
 
 function processPost(element: Element): void {
+    const text = extractText(element)
+    
+    const username = extractUsername(element)
+
     chrome.storage.local.get('vibecheck_stats', (result) => {
         const Stats = (result.vibecheck_stats ?? {blocked: 0, analyzed: 0, revealed: 0}) as {blocked: number, analyzed: number, revealed: number}
 
         const stats = {... Stats, analyzed: Stats.analyzed + 1}
 
         chrome.storage.local.set({vibecheck_stats: stats})
-
-        const text = extractText(element)
-        
-        const username = extractUsername(element)
-
-        sendForClassification(element, text, username)
-        
-        // console.log(`Total analyzed count: ${stats.analyzed}`)
     })
+
+    sendForClassification(element, text, username)
 }
 
-// Process tweets already on the page
 document.querySelectorAll(SELECTOR).forEach(processPost)
 
 let debounceTimer: ReturnType<typeof setTimeout>
@@ -50,8 +44,7 @@ const observer = new MutationObserver(() => {
 })
 
 observer.observe(document.body, {
-    childList: true,  // watch for added/removed elements
-    subtree: true     // watch the entire document tree
+    childList: true,  
+    subtree: true     
 })
 
-console.log("[VibeCheck] Reddit content script loaded")
