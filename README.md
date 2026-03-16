@@ -43,6 +43,9 @@ VibeCheck runs a full NLP pipeline entirely on your machine:
 ---
 ## Installation
 
+> Note: If you want to run the model locally, you should download the model and follow all steps given below, if not, just follow step ( 1 & 3 ) and you are good to go!
+
+
 ### What you need before starting (skip if you already have these)
 - **Python 3.10 or higher**: [Download here](https://www.python.org/downloads/)
   > ⚠️ During installation, check **"Add Python to PATH"**: this is important
@@ -59,7 +62,7 @@ VibeCheck runs a full NLP pipeline entirely on your machine:
 
 ### Step 2: Run the setup script
 
-Open the extracted `VibeCheck` folder and **double-click `setup.bat`** (needed for first time only)
+Open the extracted `VibeCheck` folder and **double-click `setup.bat`** (setup.bat is not needed if you don't want to run model locally)
 
 A window will open and automatically:
 - Check your Python installation

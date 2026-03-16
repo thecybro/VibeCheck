@@ -1,6 +1,6 @@
 {
   "../../@crx/manifest": {
-    "file": "assets/crx-manifest.js-BzaAnoN5.js",
+    "file": "assets/crx-manifest.js-BhlnOxp-.js",
     "name": "crx-manifest.js",
     "src": "../../@crx/manifest",
     "isEntry": true
@@ -29,7 +29,7 @@
     "src": "_twitter.ts-loader-CzFEw8Lg.js"
   },
   "src/background/background.ts": {
-    "file": "assets/background.ts-CB0uiYiN.js",
+    "file": "assets/background.ts-DLliGvfu.js",
     "name": "background.ts",
     "src": "src/background/background.ts",
     "isEntry": true
