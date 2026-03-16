@@ -34,7 +34,7 @@ chrome.runtime.onMessage.addListener((message, sender) => {
 
     if (message.type === "CLASSIFY_POST") {
 
-        fetch("http://localhost:8000/classify", {
+        fetch("https://thecybro-vibecheck.hf.space/classify", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({text: message.text, sensitivity: cachedSettings.sensitivity})
