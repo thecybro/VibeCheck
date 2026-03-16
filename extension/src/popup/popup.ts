@@ -214,7 +214,7 @@ async function checkServer(): Promise<void> {
   const btn = document.getElementById('serverBtn') as HTMLButtonElement
 
   try {
-    const res = await fetch('https://thecybro-vibecheck-api.hf.space/health', {
+    const res = await fetch('http://localhost:8000/health', {
       signal: AbortSignal.timeout(2000) // 2 second timeout
     })
 
@@ -226,7 +226,7 @@ async function checkServer(): Promise<void> {
         btn.style.display = 'inline-block'
         btn.textContent = 'Stop'
         btn.className = 'server-btn stop'
-        // btn.onclick = stopServer
+        btn.onclick = stopServer
       }
     }
   } catch {
@@ -244,18 +244,18 @@ async function checkServer(): Promise<void> {
   setTimeout(checkServer, 5000)
 }
 
-// async function stopServer(): Promise<void> {
-//   const btn = document.getElementById('serverBtn') as HTMLButtonElement
-//   if (btn) btn.textContent = 'Stopping...'
+async function stopServer(): Promise<void> {
+  const btn = document.getElementById('serverBtn') as HTMLButtonElement
+  if (btn) btn.textContent = 'Stopping...'
 
-//   try {
-//     await fetch('http://localhost:8000/shutdown')
-//   } catch {
-//     // Server closes connection when shutting down
-//   }
+  try {
+    await fetch('http://localhost:8000/shutdown')
+  } catch {
+    // Server closes connection when shutting down
+  }
 
-//   setTimeout(checkServer, 1000)
-// }
+  setTimeout(checkServer, 1000)
+}
 
 function showStartInstruction(): void {
   const label = document.getElementById('serverLabel')
